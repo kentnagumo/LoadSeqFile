@@ -81,7 +81,7 @@ class Exiftool:
 
         with open(filename, 'r') as f:
             for line in f:
-                res = line.split(":")
+                res = line.split(";")
 
                 key = res[0].strip()
                 value = "".join(res[1:])
