@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class Exiftool:
 
     def __init__(self, path=None):
-        
+
         if path is None:
             if sys.platform.startswith('win32'):
                 self.path = pkg_resources.resource_filename('flirpy', 'bin/exiftool.exe')
@@ -27,7 +27,7 @@ class Exiftool:
         else:
             self.path = path
             self._check_path()
-    
+
     def _check_path(self):
         try:
             subprocess.check_output([self.path])
@@ -56,7 +56,6 @@ class Exiftool:
 
         res = subprocess.call(cmd, cwd=cwd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         return res
-    
     def write_meta(self, filemask):
 
         # Do some mangling here to avoid busting the command line limit.
@@ -73,9 +72,9 @@ class Exiftool:
         logger.debug(" ".join(cmd))
 
         res = subprocess.call(cmd, cwd=cwd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        
+
         return res
-    
+
     def meta_from_file(self, filename):
         meta = {}
 
