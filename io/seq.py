@@ -214,6 +214,10 @@ class splitter:
                     # 温度値情報の出力
                     image = frame.get_radiometric_image(meta)
 
+                    # 外れ値の処理
+                    image[0, :] = image[2, :]
+                    image[1, :] = image[2, :]
+
                     # 温度値ファイルの出力
                     with open('./tmp/image_temp_{:05d}'.format(i), 'wb') as file:
                         pickle.dump(image, file)
