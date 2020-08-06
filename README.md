@@ -12,6 +12,9 @@ https://exiftool.org/ からダウンロード
 未検証
 
 ## 使い方
+
+下記コードを実行すると，tempフォルダに温度値が保存されているpklファイルが出力される．
+
 ```python
 import LoadSeqFile.io.seq as load_seq
 

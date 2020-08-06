@@ -1,5 +1,6 @@
 
 import numpy as np
+import pandas as pd
 import cv2
 import os
 import re
@@ -112,7 +113,7 @@ class splitter:
             '''
 
         # rawフォルダの削除
-        if self.export_tiff == False and self.export_meta == False:
+        if self.export_tiff == False and self.export_meta == False and self.split_filetypes == True:
             shutil.rmtree(os.path.join(folder, 'raw'))
 
         return
@@ -128,7 +129,9 @@ class splitter:
         cv2.imwrite(filename, preview_data.astype('uint8'))
 
     def _make_split_folders(self, output_folder):
+        # フォルダの作成
         Path(os.path.join(output_folder, "raw")).mkdir(exist_ok=True)
+        Path(os.path.join(output_folder, "temp")).mkdir(exist_ok=True)
         if self.export_tiff:
             Path(os.path.join(output_folder, "radiometric")).mkdir(exist_ok=True)
         if self.export_preview:
@@ -159,14 +162,18 @@ class splitter:
                 seq_blob = seq_file.read()
 
             it = self._get_fff_iterator(seq_blob)
+            loop = len(list(it))
 
             pos = []
             prev_pos = 0
 
             meta = None
 
+
+            it = self._get_fff_iterator(seq_blob)
+
             # seqファイルの1枚毎に出力
-            for i, match in tqdm(enumerate(it)):
+            for i, match in tqdm(enumerate(it), total=loop):
                 index = match.start()
                 chunksize = index-prev_pos
                 pos.append((index, chunksize))
@@ -179,11 +186,13 @@ class splitter:
                     filename_tiff = os.path.join(output_subfolder, "radiometric", "frame_{0:06d}.tiff".format(self.frame_count))
                     filename_preview = os.path.join(output_subfolder, "preview", "frame_{:06d}.{}".format(self.frame_count, self.preview_format))
                     filename_meta = os.path.join(output_subfolder, "raw", "frame_{0:06d}.txt".format(self.frame_count))
+                    filename_temp = os.path.join(output_subfolder, "temp", "frame_{0:06d}.pkl".format(self.frame_count))
                 else:
                     filename_fff = os.path.join(output_subfolder, "frame_{0:06d}.fff".format(self.frame_count))
                     filename_tiff = os.path.join(output_subfolder, "frame_{0:06d}.tiff".format(self.frame_count))
                     filename_preview = os.path.join(output_subfolder, "frame_{:06d}.{}".format(self.frame_count, self.preview_format))
                     filename_meta = os.path.join(output_subfolder, "frame_{0:06d}.txt".format(self.frame_count))
+                    filename_temp = os.path.join(output_subfolder, "frame_{0:06d}.pkl".format(self.frame_count))
 
                 if index == 0:
                     continue
@@ -219,7 +228,7 @@ class splitter:
                     image[1, :] = image[2, :]
 
                     # 温度値ファイルの出力
-                    with open('./tmp/image_temp_{:05d}'.format(i), 'wb') as file:
+                    with open(filename_temp, 'wb') as file:
                         pickle.dump(image, file)
 
                     # Export raw files and/or radiometric convert them
