@@ -32,8 +32,8 @@ class splitter:
         self.start_index = start_index
         self.step = step
         self.frame_count = self.start_index
-        self.export_tiff = True
-        self.export_meta = True
+        self.export_tiff = False
+        self.export_meta = False
         self.export_preview = False
         self.export_radiometric = True
         self.overwrite = True
@@ -196,21 +196,24 @@ class splitter:
                     if self.export_meta and self._check_overwrite(filename_fff):
                             frame.write(filename_fff)
 
+                    # meta情報のロード
                     # We need at least one meta file to get the radiometric conversion coefficients
                     if meta is None and self.export_radiometric:
                         frame.write(filename_fff)
                         self.exiftool.write_meta(filename_fff)
                         meta = self.exiftool.meta_from_file(filename_meta)
 
+
+                    # 温度値情報の出力
+                    image = frame.get_radiometric_image(meta)
+
+                    # 温度値ファイルの出力
+                    with open('./tmp/image_temp_{:05d}'.format(i), 'wb') as file:
+                        pickle.dump(image, file)
+
                     # Export raw files and/or radiometric convert them
                     if self.export_tiff and self._check_overwrite(filename_tiff):
                             if self.export_radiometric and meta is not None:
-                                image = frame.get_radiometric_image(meta)
-
-                                # 温度値ファイルの出力
-                                with open('./tmp/image_temp_{:05d}'.format(i), 'wb') as file:
-                                    pickle.dump(image, file)
-
                                 image += 273.15 # Convert to Kelvin
                                 image /= 0.04
                             else:
