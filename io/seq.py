@@ -8,6 +8,7 @@ import pickle
 import tqdm
 import logging
 from glob import iglob, glob
+import shutil
 import subprocess
 from tqdm.autonotebook import tqdm
 
@@ -109,6 +110,11 @@ class splitter:
                     logger.info("Copying tags to preview")
                     self.exiftool.copy_meta(folder, filemask=copy_filemask, output_folder=preview_folder, ext=self.preview_format)
             '''
+
+        # rawフォルダの削除
+        if self.export_tiff == False and self.export_meta == False:
+            shutil.rmtree(os.path.join(folder, 'raw'))
+
         return folders
 
     def _write_tiff(self, filename, data):
@@ -123,8 +129,10 @@ class splitter:
 
     def _make_split_folders(self, output_folder):
         Path(os.path.join(output_folder, "raw")).mkdir(exist_ok=True)
-        Path(os.path.join(output_folder, "radiometric")).mkdir(exist_ok=True)
-        Path(os.path.join(output_folder, "preview")).mkdir(exist_ok=True)
+        if self.export_tiff:
+            Path(os.path.join(output_folder, "radiometric")).mkdir(exist_ok=True)
+        if self.export_preview:
+            Path(os.path.join(output_folder, "preview")).mkdir(exist_ok=True)
 
     def _get_fff_iterator(self, seq_blob):
 
