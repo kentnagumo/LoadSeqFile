@@ -4,8 +4,8 @@ import numpy as np
 import sys
 import six
 
-from flirpy.util.raw import raw2temp
-from flirpy.util.exiftool import Exiftool
+from LoadSeqFile.util.raw import raw2temp
+from LoadSeqFile.util.exiftool import Exiftool
 
 class Fff:
 

@@ -54,7 +54,7 @@ class splitter:
 
         logger.info("Merging {} files".format(len(file_list)))
 
-        working_folder = os.path.join(tempfile.gettempdir(), "flirpy")
+        working_folder = os.path.join(tempfile.gettempdir(), "LoadSeqFile")
         os.makedirs(working_folder, exist_ok=True)
 
         merge_file = self._merge_files(file_list, working_folder)
