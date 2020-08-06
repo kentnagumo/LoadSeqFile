@@ -203,7 +203,6 @@ class splitter:
                         self.exiftool.write_meta(filename_fff)
                         meta = self.exiftool.meta_from_file(filename_meta)
 
-
                     # 温度値情報の出力
                     image = frame.get_radiometric_image(meta)
 
@@ -218,7 +217,6 @@ class splitter:
                                 image /= 0.04
                             else:
                                 print('meta情報がありません')
-                                # image = frame.get_image()
                                 return
 
                             self._write_tiff(filename_tiff, image)
