@@ -9,6 +9,8 @@ import pickle
 import logging
 logger = logging.getLogger(__name__)
 
+file_i = 0
+
 class Exiftool:
 
     def __init__(self, path=None):
@@ -77,21 +79,19 @@ class Exiftool:
         return res
 
     def meta_from_file(self, filename):
+        global file_i
         meta = {}
 
+        # metaファイルの読み込み
         with open(filename, 'r') as f:
             for line in f:
-                with open('res_sample', 'wb') as file:
-                    pickle.dump(meta, file)
-
                 res = line.split(":")
-
-                with open('res_split_sample', 'wb') as file:
-                    pickle.dump(meta, file)
+                with open('./tmp/res_{:05d}'.format(file_i), 'wb') as file:
+                    pickle.dump(res, file)
 
                 key = res[0].strip()
-                value = "".join(res[1:])
-
+                value = "".join(res[1:]).lstrip().rstrip('\n')
                 meta[key] = value
+                file_i += 1
 
         return meta

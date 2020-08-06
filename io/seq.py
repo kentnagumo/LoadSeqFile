@@ -185,6 +185,7 @@ class splitter:
                 else:
                     chunk = seq_blob.read(chunksize)
 
+                print(i)
                 if i % self.step == 0:
 
                     frame = Fff(chunk, height=self.height, width=self.width)
@@ -195,12 +196,14 @@ class splitter:
 
                     # We need at least one meta file to get the radiometric conversion coefficients
                     if meta is None and self.export_radiometric:
+                        # print('meta | {:05d}'.format(i))
+                        print('load meta')
                         frame.write(filename_fff)
                         self.exiftool.write_meta(filename_fff)
                         meta = self.exiftool.meta_from_file(filename_meta)
 
                     # metaを出力
-                    with open('meta_sample', 'wb') as file:
+                    with open('./tmp/meta_sample_{:05d}'.format(i), 'wb') as file:
                         pickle.dump(meta, file)
 
                     # Export raw files and/or radiometric convert them
