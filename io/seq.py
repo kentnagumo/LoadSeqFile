@@ -161,14 +161,17 @@ class splitter:
             else:
                 seq_blob = seq_file.read()
 
+            # ループサイズを取得
             it = self._get_fff_iterator(seq_blob)
             loop = len(list(it))
+
+            # 温度値出力用
+            temp_data_all = np.zeros((loop, self.height, self.width))
 
             pos = []
             prev_pos = 0
 
             meta = None
-
 
             it = self._get_fff_iterator(seq_blob)
 
@@ -222,6 +225,7 @@ class splitter:
 
                     # 温度値情報の出力
                     image = frame.get_radiometric_image(meta)
+                    image = image.astype('float32')
 
                     # 外れ値の処理
                     image[0, :] = image[2, :]
@@ -230,6 +234,7 @@ class splitter:
                     # 温度値ファイルの出力
                     with open(filename_temp, 'wb') as file:
                         pickle.dump(image, file)
+                    # temp_data_all[i] = image
 
                     # Export raw files and/or radiometric convert them
                     if self.export_tiff and self._check_overwrite(filename_tiff):
@@ -247,5 +252,10 @@ class splitter:
                         self._write_preview(filename_preview, image)
 
                 self.frame_count += 1
+
+        # 全温度データの出力
+        # temp_data_filename = os.path.join(output_subfolder, "temp_data.pkl")
+        # with open(temp_data_filename, 'wb') as file:
+        #     pickle.dump(temp_data_all, file)
 
         return
