@@ -115,7 +115,7 @@ class splitter:
         if self.export_tiff == False and self.export_meta == False:
             shutil.rmtree(os.path.join(folder, 'raw'))
 
-        return folders
+        return
 
     def _write_tiff(self, filename, data):
         logger.debug("Writing {}", filename)
