@@ -86,8 +86,6 @@ class Exiftool:
         with open(filename, 'r') as f:
             for line in f:
                 res = line.split(":")
-                with open('./tmp/res_{:05d}'.format(file_i), 'wb') as file:
-                    pickle.dump(res, file)
 
                 key = res[0].strip()
                 value = "".join(res[1:]).lstrip().rstrip('\n')

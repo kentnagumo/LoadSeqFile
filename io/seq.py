@@ -109,7 +109,6 @@ class splitter:
                     logger.info("Copying tags to preview")
                     self.exiftool.copy_meta(folder, filemask=copy_filemask, output_folder=preview_folder, ext=self.preview_format)
             '''
-        print('Process end')
         return folders
 
     def _write_tiff(self, filename, data):
@@ -158,7 +157,6 @@ class splitter:
 
             meta = None
 
-            print('Loop Start')
             # seqファイルの1枚毎に出力
             for i, match in tqdm(enumerate(it)):
                 index = match.start()
@@ -200,22 +198,16 @@ class splitter:
 
                     # We need at least one meta file to get the radiometric conversion coefficients
                     if meta is None and self.export_radiometric:
-                        # print('meta | {:05d}'.format(i))
-                        print('load meta')
                         frame.write(filename_fff)
                         self.exiftool.write_meta(filename_fff)
                         meta = self.exiftool.meta_from_file(filename_meta)
-
-                    # metaを出力
-                    with open('./tmp/meta_sample_{:05d}'.format(i), 'wb') as file:
-                        pickle.dump(meta, file)
 
                     # Export raw files and/or radiometric convert them
                     if self.export_tiff and self._check_overwrite(filename_tiff):
                             if self.export_radiometric and meta is not None:
                                 image = frame.get_radiometric_image(meta)
 
-                                # 変換前のイメージファイルの読み込み
+                                # 温度値ファイルの出力
                                 with open('./tmp/image_temp_{:05d}'.format(i), 'wb') as file:
                                     pickle.dump(image, file)
 
@@ -227,10 +219,6 @@ class splitter:
                                 return
 
                             self._write_tiff(filename_tiff, image)
-
-                    # imageを出力
-                    with open('./tmp/image_{:05d}'.format(i), 'wb') as file:
-                        pickle.dump(image, file)
 
                     # Export preview frame (crushed to 8-bit)
                     if self.export_preview and self._check_overwrite(filename_preview):
