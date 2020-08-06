@@ -52,7 +52,7 @@ class splitter:
     def set_start_index(self, index):
         self.start_index = int(index)
 
-    def process(self, file_list):
+    def load_temp(self, file_list):
 
         if isinstance(file_list, str):
             file_list = [file_list]
