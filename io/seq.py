@@ -34,7 +34,7 @@ class splitter:
         self.frame_count = self.start_index
         self.export_tiff = True
         self.export_meta = True
-        self.export_preview = True
+        self.export_preview = False
         self.export_radiometric = True
         self.overwrite = True
         self.split_folders = split_folders
@@ -77,9 +77,11 @@ class splitter:
 
             Path(folder).mkdir(exist_ok=True)
 
+            # seqファイルを1枚毎に分割し保存
             logger.info("Splitting {} into {}".format(seq, folder))
             self._process_seq(seq, folder)
 
+            '''
             # Batch export meta data
             if self.export_meta:
                 logger.info("Extracting metadata")
@@ -106,7 +108,8 @@ class splitter:
                 if self.export_preview:
                     logger.info("Copying tags to preview")
                     self.exiftool.copy_meta(folder, filemask=copy_filemask, output_folder=preview_folder, ext=self.preview_format)
-
+            '''
+        print('Process end')
         return folders
 
     def _write_tiff(self, filename, data):
@@ -185,9 +188,10 @@ class splitter:
                 else:
                     chunk = seq_blob.read(chunksize)
 
-                print(i)
+                # print(i)
                 if i % self.step == 0:
 
+                    # 温度値データのロード
                     frame = Fff(chunk, height=self.height, width=self.width)
 
                     # Need FFF files to extract meta, but we do it one go afterwards
@@ -210,12 +214,23 @@ class splitter:
                     if self.export_tiff and self._check_overwrite(filename_tiff):
                             if self.export_radiometric and meta is not None:
                                 image = frame.get_radiometric_image(meta)
+
+                                # 変換前のイメージファイルの読み込み
+                                with open('./tmp/image_temp_{:05d}'.format(i), 'wb') as file:
+                                    pickle.dump(image, file)
+
                                 image += 273.15 # Convert to Kelvin
                                 image /= 0.04
                             else:
-                                image = frame.get_image()
+                                print('meta情報がありません')
+                                # image = frame.get_image()
+                                return
 
                             self._write_tiff(filename_tiff, image)
+
+                    # imageを出力
+                    with open('./tmp/image_{:05d}'.format(i), 'wb') as file:
+                        pickle.dump(image, file)
 
                     # Export preview frame (crushed to 8-bit)
                     if self.export_preview and self._check_overwrite(filename_preview):
