@@ -26,6 +26,7 @@ class Exiftool:
                     logger.warning("Exiftool not installed, try: apt install exiftool")
             else:
                 self.path = pkg_resources.resource_filename('LoadSeqFile', 'bin/exiftool')
+                self.path = os.path.abspath(self.path)
 
         else:
             self.path = path
