@@ -7,9 +7,25 @@ https://github.com/LJMUAstroecology/flirpy/tree/master/flirpy のコードを改
 exiftool 12.03
 https://exiftool.org/ からダウンロード
 
+必要なパッケージは以下の通りである．
+```bash
+conda install -c conda-forge imagecodecs
+conda install -c conda-forge imagecodecs-lite
+pip install opencv-python
+```
+
 ### Ubuntu 18.04
 
-未検証
+exiftool 12.03
+https://exiftool.org/ からダウンロード
+
+必要なパッケージは以下の通りである．
+```bash
+conda install -c conda-forge imagecodecs
+conda install -c conda-forge imagecodecs-lite
+pip install opencv-python
+sudo apt install libimage-exiftool-perl
+```
 
 ## 使い方
 
@@ -36,4 +52,5 @@ seq_splitter.load_temp(seq_file)
 | バージョン | 改定内容 |
 | ---------- | -------- |
 | 1.0.0      | 初版 画像が1枚毎にpklファイルで出力される     |
+| 1.0.1      | Linuxでエラーが出る現象の修正     |
 
