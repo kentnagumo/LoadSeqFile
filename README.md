@@ -4,7 +4,7 @@ https://github.com/LJMUAstroecology/flirpy/tree/master/flirpy のコードを改
 
 ## 依存環境
 ### Windows 10
-exiftool 12.03
+exiftool 12.03を
 https://exiftool.org/ からダウンロード
 
 必要なパッケージは以下の通りである．
@@ -15,9 +15,6 @@ pip install opencv-python
 ```
 
 ### Ubuntu 18.04
-
-exiftool 12.03
-https://exiftool.org/ からダウンロード
 
 必要なパッケージは以下の通りである．
 ```bash
