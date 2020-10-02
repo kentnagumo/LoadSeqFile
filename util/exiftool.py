@@ -7,7 +7,7 @@ import platform
 import pickle
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('LoadSeqFile').getChild('exiftool.py')
 
 file_i = 0
 

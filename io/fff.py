@@ -36,10 +36,14 @@ class Fff:
             fff_file.write(self.data)
 
     def _find_data_offset(self, data):
-    
-        search =  struct.pack("<H", self.width-1)\
-                    +b"\x00\x00"\
-                    + struct.pack("<H", self.height-1)
+        d_number_w = self.width-1
+        x_number_w = d_number_w.to_bytes(2, byteorder='little').hex()
+
+        d_number_h = self.height-1
+        x_number_h = d_number_h.to_bytes(2, byteorder='little').hex()
+
+        search_str = '\\x{}\\x{}\\x00\\x00\\x{}\\x{}'.format(x_number_w[0:2], x_number_w[2:4], x_number_h[0:2], x_number_h[2:4])
+        search = search_str.encode()
 
         valid = re.compile(search)
         res = valid.search(data)

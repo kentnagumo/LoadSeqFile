@@ -16,7 +16,7 @@ try:
 except ImportError:
   from pathlib2 import Path  # python 2 backport
 
-logger = logging.getLogger()
+logger = logging.getLogger('LoadSeqFile').getChild('teax.py')
 
 """
 A couple of utility functions from StackOverflow

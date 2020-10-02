@@ -21,7 +21,7 @@ except ImportError:
 from LoadSeqFile.util.exiftool import Exiftool
 from LoadSeqFile.io.fff import Fff
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('LoadSeqFile').getChild('seq.py')
 
 class splitter:
 
