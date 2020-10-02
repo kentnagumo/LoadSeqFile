@@ -48,7 +48,15 @@ class Fff:
         valid = re.compile(search)
         res = valid.search(data)
 
-        return res.end()+14
+        # オフセットの調整
+        if self.width == 640 and self.height == 480:
+            res_end = 2636
+        elif self.width == 320 and self.height == 256:
+            res_end = 2268
+        else:
+            res_end = res.end() + 14
+
+        return res_end
     
     def get_radiometric_image(self, meta):
         image = raw2temp(self.get_image(), meta)

@@ -228,8 +228,8 @@ class splitter:
                     image = image.astype('float32')
 
                     # 外れ値の処理
-                    image[0, :] = image[2, :]
-                    image[1, :] = image[2, :]
+                    # image[0, :] = image[2, :]
+                    # image[1, :] = image[2, :]
 
                     # 温度値ファイルの出力
                     with open(filename_temp, 'wb') as file:
