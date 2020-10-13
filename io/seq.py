@@ -25,7 +25,7 @@ logger = logging.getLogger('LoadSeqFile').getChild('seq.py')
 
 class splitter:
 
-    def __init__(self, output_folder="./", exiftool_path=None, start_index=0, step=1, width=640, height=512, split_folders=True, preview_format="jpg"):
+    def __init__(self, output_folder="./", exiftool_path=None, start_index=0, step=1, width=640, height=512, split_folders=True, preview_format="jpg", export_meta=False):
 
         self.exiftool = Exiftool(exiftool_path)
 
@@ -35,7 +35,7 @@ class splitter:
         self.step = step
         self.frame_count = self.start_index
         self.export_tiff = False
-        self.export_meta = False
+        self.export_meta = export_meta
         self.export_preview = False
         self.export_radiometric = True
         self.overwrite = True
@@ -114,7 +114,10 @@ class splitter:
 
         # rawフォルダの削除
         if self.export_tiff == False and self.export_meta == False and self.split_filetypes == True:
-            shutil.rmtree(os.path.join(folder, 'raw'))
+            # rawディレクトリ内のファイル数の確認
+            num_raw_file = len(glob(os.path.join(folder, 'raw') + '/*.txt'))
+            if num_raw_file < 2:
+                shutil.rmtree(os.path.join(folder, 'raw'))
 
         return
 
@@ -212,24 +215,24 @@ class splitter:
                     # 温度値データのロード
                     frame = Fff(chunk, height=self.height, width=self.width)
 
-                    # Need FFF files to extract meta, but we do it one go afterwards
-                    if self.export_meta and self._check_overwrite(filename_fff):
-                            frame.write(filename_fff)
-
                     # meta情報のロード
                     # We need at least one meta file to get the radiometric conversion coefficients
-                    if meta is None and self.export_radiometric:
+                    # meta情報の出力: True
+                    if self.export_meta == True:
                         frame.write(filename_fff)
                         self.exiftool.write_meta(filename_fff)
                         meta = self.exiftool.meta_from_file(filename_meta)
+                        # print(meta['Date/Time Original']) # 時間情報
+                    # meta情報の出力: False
+                    else:
+                        if meta is None and self.export_radiometric:
+                            frame.write(filename_fff)
+                            self.exiftool.write_meta(filename_fff)
+                            meta = self.exiftool.meta_from_file(filename_meta)
 
                     # 温度値情報の出力
                     image = frame.get_radiometric_image(meta)
                     image = image.astype('float32')
-
-                    # 外れ値の処理
-                    # image[0, :] = image[2, :]
-                    # image[1, :] = image[2, :]
 
                     # 温度値ファイルの出力
                     with open(filename_temp, 'wb') as file:
