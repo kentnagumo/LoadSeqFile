@@ -25,12 +25,13 @@ logger = logging.getLogger('LoadSeqFile').getChild('seq.py')
 
 class splitter:
 
-    def __init__(self, output_folder="./", exiftool_path=None, start_index=0, step=1, width=640, height=512, split_folders=True, preview_format="jpg", export_meta=False):
+    def __init__(self, output_folder="./", exiftool_path=None, start_index=0, step=1, width=640, height=512, header_length=None, split_folders=True, preview_format="jpg", export_meta=False):
 
         self.exiftool = Exiftool(exiftool_path)
 
         self.width = width
         self.height = height
+        self.header_length = header_length
         self.start_index = start_index
         self.step = step
         self.frame_count = self.start_index
@@ -213,7 +214,7 @@ class splitter:
                 if i % self.step == 0:
 
                     # 温度値データのロード
-                    frame = Fff(chunk, height=self.height, width=self.width)
+                    frame = Fff(chunk, height=self.height, width=self.width, header_length=self.header_length)
 
                     # meta情報のロード
                     # We need at least one meta file to get the radiometric conversion coefficients

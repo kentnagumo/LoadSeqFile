@@ -10,10 +10,11 @@ from LoadSeqFile.util.exiftool import Exiftool
 
 class Fff:
 
-    def __init__(self, data, height = 512, width = 640, exiftool_path=None):
+    def __init__(self, data, height = 512, width = 640, header_length=None, exiftool_path=None):
 
         self.height = height
         self.width = width
+        self.header_length = header_length
         self.image = None
         self.filename = None
 
@@ -49,12 +50,15 @@ class Fff:
         res = valid.search(data)
 
         # オフセットの調整
-        if self.width == 640 and self.height == 480:
-            res_end = 2636
-        elif self.width == 320 and self.height == 256:
-            res_end = 2268
+        if self.header_length == None:
+            if self.width == 640 and self.height == 480:
+                res_end = 2636
+            elif self.width == 320 and self.height == 256:
+                res_end = 2268
+            else:
+                res_end = res.end() + 14
         else:
-            res_end = res.end() + 14
+            res_end = self.header_length
 
         return res_end
     
