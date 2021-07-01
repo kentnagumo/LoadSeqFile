@@ -25,7 +25,8 @@ logger = logging.getLogger('LoadSeqFile').getChild('seq.py')
 
 class splitter:
 
-    def __init__(self, output_folder="./", exiftool_path=None, start_index=0, step=1, width=640, height=512, header_length=None, split_folders=True, preview_format="jpg", export_meta=False):
+    def __init__(self, output_folder="./", exiftool_path=None, start_index=0, step=1, width=640, height=512, 
+                 out_temp=None, out_rh=None, distance=None, header_length=None, split_folders=True, preview_format="jpg", export_meta=False):
 
         self.exiftool = Exiftool(exiftool_path)
 
@@ -43,6 +44,10 @@ class splitter:
         self.split_folders = split_folders
         self.split_filetypes = True
         self.use_mmap = True
+
+        self.out_temp = out_temp
+        self.out_rh = out_rh
+        self.distance = distance
 
         if preview_format in ["jpg", "jpeg", "png", "tiff"]:
             self.preview_format = preview_format
@@ -232,7 +237,7 @@ class splitter:
                             meta = self.exiftool.meta_from_file(filename_meta)
 
                     # 温度値情報の出力
-                    image = frame.get_radiometric_image(meta)
+                    image = frame.get_radiometric_image(meta, self.out_temp, self.out_rh, self.distance)
                     image = image.astype('float32')
 
                     # 温度値ファイルの出力

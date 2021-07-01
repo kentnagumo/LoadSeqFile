@@ -62,8 +62,8 @@ class Fff:
 
         return res_end
     
-    def get_radiometric_image(self, meta):
-        image = raw2temp(self.get_image(), meta)
+    def get_radiometric_image(self, meta, out_temp, out_rh, distance):
+        image = raw2temp(self.get_image(), meta, out_temp, out_rh, distance)
 
         return image
 

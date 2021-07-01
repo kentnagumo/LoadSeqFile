@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-def raw2temp(raw, meta):
+def raw2temp(raw, meta, out_temp, out_rh, distance):
     """
     Convert raw pixel values to temperature, if calibration coefficients are known. The
     equations for atmospheric and window transmission are found in Minkina and Dudzik, as 
@@ -28,6 +28,19 @@ def raw2temp(raw, meta):
     ATemp = float(meta["Atmospheric Temperature"].split('C')[0])
     RTemp = float(meta["Reflected Apparent Temperature"].split('C')[0])
     humidity = float(meta["Relative Humidity"].split('%')[0])
+
+    if out_temp != None:
+        IRWTemp = out_temp
+        ATemp = out_temp
+        RTemp = out_temp
+
+    if out_rh != None:
+        humidity = humidity
+    
+    if distance != None:
+        OD = distance
+
+    E = 0.98
 
     # Equations to convert to temperature
     # See http://130.15.24.88/exiftool/forum/index.php/topic,4898.60.html
